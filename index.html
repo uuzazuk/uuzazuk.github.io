@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -8,14 +9,17 @@
   <!-- Google Fonts: Orbitron & Outfit -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Outfit:wght@300;400;600;700&display=swap"
+    rel="stylesheet">
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <div id="app" class="game-container">
-    
+
     <!-- 배경 글로우 데코레이션 -->
     <div class="glow-bg-1"></div>
     <div class="glow-bg-2"></div>
@@ -112,7 +116,7 @@
       <!-- 중앙/우측 메인 보드: 4행 3열 그리드 판 -->
       <section class="board-area">
         <div class="game-board">
-          
+
           <!-- [1행 1열] P2 덱 슬롯 -->
           <div class="board-cell cell-1-1" id="p2-deck-slot">
             <div class="slot-label">P2 DECK</div>
@@ -212,8 +216,8 @@
     <div id="start-modal" class="modal-overlay active">
       <div class="modal-content glass-card">
         <h2 class="neon-title">NEON ARENA</h2>
-        <p class="subtitle">디지털 카드 배틀 시뮬레이터 (V2)</p>
-        
+        <p class="subtitle">디지털 카드 배틀 시뮬레이터 (V2.1)</p>
+
         <div class="modal-body">
           <div class="game-rules">
             <h4><i data-lucide="help-circle"></i> 신규 게임 규칙 안내</h4>
@@ -222,11 +226,12 @@
               <li>⚔️ <strong>공격 카드 (15장)</strong>: 10~30 공격력으로 적 생명력을 직접 깎습니다.</li>
               <li>❤️ <strong>회복 카드 (5장)</strong>: 10~20 회복력으로 아군 생명력을 회복합니다. (최대 100)</li>
               <li>🛡️ <strong>방어 카드 (5장)</strong>: 5~10 방어력을 가집니다. 상대방 공격 턴에 패에서 소모하여 들어오는 피해를 경감시킵니다.</li>
-              <li>🌟 <strong>특수 카드 (5장)</strong>: 10~30의 잠재력을 지니며, <strong>카드를 뽑는 순간</strong> 공격/방어/회복 중 하나를 직접 선택해 변환시킵니다.</li>
+              <li>🌟 <strong>특수 카드 (5장)</strong>: 10~30의 잠재력을 지니며, <strong>카드를 뽑는 순간</strong> 공격/방어/회복 중 하나를 직접 선택해
+                변환시킵니다.</li>
             </ul>
           </div>
         </div>
-        
+
         <div class="modal-footer">
           <button id="start-game-btn" class="neon-btn start-btn">아레나 입장하기</button>
         </div>
@@ -238,7 +243,7 @@
       <div class="modal-content glass-card special-choice-card">
         <h2 class="neon-title gold-title">SPECIAL DETECTED</h2>
         <p class="subtitle">특수 카드의 변환 속성을 결정하세요</p>
-        
+
         <div class="special-card-preview">
           <div class="card special-preview-card">
             <div class="card-header">
@@ -276,7 +281,7 @@
           <h2 class="neon-title red-title">UNDER ATTACK</h2>
         </div>
         <p class="subtitle">상대의 위협적인 공격이 시작됩니다!</p>
-        
+
         <div class="defense-status-info">
           <div class="incoming-atk">
             <span class="label">적 공격 데미지</span>
@@ -288,14 +293,14 @@
             <span id="predicted-damage-value" class="dmg-val">24</span>
           </div>
         </div>
-        
+
         <p class="defense-instruction">패에 있는 방어 카드를 선택하면 데미지를 감쇄시킵니다.</p>
-        
+
         <!-- 방어 카드 리스트 표시부 -->
         <div id="defense-cards-list" class="defense-options-container">
           <!-- JS에서 동적으로 보유한 방어 카드를 리스트업 -->
         </div>
-        
+
         <div class="defense-action-footer">
           <button id="defense-skip-btn" class="skip-btn">방어 카드 사용 안 함 (전체 피해 감수)</button>
         </div>
@@ -307,7 +312,7 @@
       <div class="modal-content glass-card result-card">
         <div id="result-badge" class="result-badge">WINNER</div>
         <h2 id="result-title" class="neon-title winner-title">VICTORY</h2>
-        
+
         <div class="result-details">
           <div class="result-hp-compare">
             <div class="hp-final">
@@ -333,4 +338,5 @@
 
   <script src="app.js"></script>
 </body>
+
 </html>
