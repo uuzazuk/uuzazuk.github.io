@@ -1,5 +1,5 @@
 /* ==========================================
-   NEON ARENA CARD GAME STYLE SHEET (V2)
+   NEON ARENA CARD GAME STYLE SHEET (V3 - Mobile Optimized)
    ========================================== */
 
 /* 1. 디자인 시스템 & 변수 설정 */
@@ -48,7 +48,7 @@
   margin: 0;
   padding: 0;
   user-select: none;
-  touch-action: manipulation; /* 모바일 더블탭 줌 방지 */
+  touch-action: manipulation;
 }
 
 body {
@@ -90,6 +90,7 @@ body {
   padding: 15px 25px;
   max-width: 1600px;
   margin: 0 auto;
+  overflow: hidden; /* 절대 화면 외부 스크롤바 허용 안 함 */
 }
 
 /* 3. 헤더 영역 */
@@ -163,7 +164,7 @@ body {
   letter-spacing: 1px;
 }
 
-/* 모바일 로그 토글 버튼 (데스크톱 기본 비활성화) */
+/* 모바일 로그 토글 버튼 */
 .toggle-log-btn {
   display: none;
   background: rgba(255, 255, 255, 0.05);
@@ -190,6 +191,7 @@ body {
   gap: 20px;
   padding: 15px 0;
   height: calc(100vh - 90px);
+  overflow: hidden;
 }
 
 /* 5. 사이드 패널 (HP 및 로그) */
@@ -433,6 +435,7 @@ body {
   border: 1px dashed rgba(255, 255, 255, 0.05);
   border-radius: 16px;
   position: relative;
+  min-height: 0; /* flex 환경 내 높이 붕괴 방지 */
 }
 
 /* 그리드 셀 공통 */
@@ -906,318 +909,308 @@ body {
 }
 
 /* ==========================================
-   18. 모바일 전용 반응형 스타일 (Max-width: 480px)
+   18. 모바일 전용 반응형 스타일 (Max-width: 480px - 극단적 공간 절약)
    ========================================== */
 @media (max-width: 480px) {
+  /* 외부 마진 극소화 및 화면 스크롤 금지 */
   .game-container {
-    padding: 8px 12px;
+    padding: 2px 4px;
+    height: 100vh;
+    overflow: hidden;
   }
   
+  /* 헤더 높이 최소화 */
   .game-header {
-    height: 52px;
-    padding-bottom: 8px;
+    height: 32px;
+    padding-bottom: 0px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   }
 
   .logo {
-    font-size: 1.1rem;
-    letter-spacing: 1px;
-  }
-
-  .turn-status-panel {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-
-  .turn-badge {
-    padding: 3px 12px;
-    font-size: 0.75rem;
-  }
-
-  .turn-timer {
-    font-size: 0.6rem;
-    margin-top: 2px;
-  }
-
-  /* 모바일 로그 토글 버튼 활성화 */
-  .toggle-log-btn {
-    display: flex;
-  }
-
-  .game-main {
-    flex-direction: column;
-    gap: 8px;
-    padding: 8px 0 0 0;
-    height: calc(100vh - 65px);
-    overflow: hidden;
-  }
-
-  /* 상하단으로 컴팩트하게 밀어넣기 */
-  .side-panel {
-    flex-direction: column;
-    gap: 4px;
-    height: auto;
-    width: 100%;
-  }
-
-  /* 모바일에서는 P2(CPU) HP 게이지를 상단에, P1(유저) HP 게이지를 그리드 하단에 배치 */
-  .player-panel {
-    background: rgba(18, 24, 38, 0.4);
-    padding: 8px 12px;
-    border-radius: 8px;
-    gap: 4px;
-  }
-  
-  /* 프로필 상세 및 아바타 크기 극소화 */
-  .avatar {
-    width: 28px;
-    height: 28px;
-    font-size: 0.9rem;
-  }
-  .player-details h3 {
-    font-size: 0.75rem;
-  }
-  .player-details .status-desc {
-    display: none;
-  }
-  .hp-section {
-    gap: 3px;
-  }
-  .hp-label {
-    font-size: 0.65rem;
-  }
-  .hp-value {
-    font-size: 0.75rem;
-  }
-  .hp-bar-container {
-    height: 8px;
-  }
-
-  /* 모바일 사이드 서랍형 로그 패널 */
-  .log-panel {
-    display: flex; /* 미디어쿼리 1024px에서의 none을 모바일에선 다시 켬 */
-    position: fixed;
-    top: 0;
-    right: -105%;
-    width: 290px;
-    height: 100vh;
-    z-index: 105;
-    background: rgba(10, 13, 22, 0.95);
-    border: none;
-    border-left: 1px solid var(--glass-border);
-    backdrop-filter: blur(20px);
-    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.8);
-    transition: right 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-    border-radius: 0;
-    padding: 20px 15px;
-    min-height: 100vh;
-  }
-
-  .log-panel.active {
-    right: 0;
-  }
-
-  .close-log-btn {
-    display: block; /* 닫기 버튼 보임 */
-  }
-
-  .battle-log-content {
-    font-size: 0.75rem;
-  }
-
-  /* 4x3 그리드 보드 모바일화 */
-  .board-area {
-    gap: 8px;
-    flex: 1;
-    min-height: 0;
-  }
-
-  .game-board {
-    border-radius: 12px;
-    padding: 6px;
-    gap: 6px;
-  }
-
-  .board-cell {
-    border-radius: 8px;
-    padding: 4px;
-  }
-
-  .slot-label {
-    font-size: 0.5rem;
-    top: 2px;
-    left: 4px;
+    font-size: 0.85rem;
     letter-spacing: 0.5px;
   }
 
-  /* 모바일용 카드 및 덱 크기 */
-  .deck-wrapper {
-    width: 55px;
-    height: 78px;
-  }
-  .deck-count {
-    font-size: 1.1rem;
-  }
-  .card-deck {
-    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  .turn-status-panel {
+    flex-direction: row;
+    gap: 4px;
+    align-items: center;
   }
 
-  /* 핸드 카드 목록 */
-  .hand-container {
-    gap: 6px;
+  .turn-badge {
+    padding: 2px 8px;
+    font-size: 0.65rem;
+  }
+
+  .turn-timer {
+    display: none; /* 모바일에서 타이머 텍스트 숨겨 공간 확보 */
+  }
+
+  /* 로그 토글 버튼 - 극소형 모바일 화면에서 숨김 및 비활성화 */
+  .toggle-log-btn {
+    display: none !important;
+  }
+
+  .game-main {
+    padding: 2px 0 0 0;
+    gap: 2px;
+    height: calc(100vh - 36px);
+  }
+
+  /* 상태바 컴팩트화 */
+  .side-panel {
+    gap: 2px;
+  }
+
+  .player-panel {
+    padding: 3px 6px;
+    border-radius: 4px;
+    gap: 1px;
+    flex-direction: row; /* 좌우 가로 한줄 배치로 세로 공간 획득 */
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .player-meta {
+    gap: 4px;
+  }
+  .avatar {
+    display: none; /* 모바일에서 아바타 완전 제거 */
+  }
+  
+  .player-details h3 {
+    font-size: 0.65rem;
+  }
+
+  .hp-section {
+    flex: 1;
+    margin-left: 6px;
+    gap: 1px;
+    max-width: 100px; /* 가로 넘침 방지를 위해 더 축소 */
+  }
+  
+  .hp-label {
+    font-size: 0.55rem;
+  }
+  
+  .hp-value {
+    font-size: 0.65rem;
+  }
+  
+  .hp-bar-container {
+    height: 5px;
+  }
+
+  /* 모바일 서랍형 로그 패널 (안보여도 되므로 레이아웃에서 숨김) */
+  .log-panel {
+    display: none !important; /* 로그 패널을 완전히 숨김 */
+  }
+
+  .close-log-btn {
+    display: none;
+  }
+
+  /* 4x3 그리드 보드 세로 맞춤화 */
+  .board-area {
+    gap: 2px;
+    min-height: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .game-board {
+    border-radius: 8px;
     padding: 2px;
-    justify-content: flex-start; /* 모바일에서 겹침 및 스크롤을 원활히 하기 위해 왼쪽 정렬 */
+    gap: 3px;
+    flex: 1; /* 가용 공간 안에서 정확히 높이 균등 할당 */
+    min-height: 0;
+  }
+
+  .board-cell {
+    border-radius: 4px;
+    padding: 1px;
+  }
+
+  /* 보드 셀 라벨 숨김 (세로 공간 추가로 확보) */
+  .slot-label {
+    display: none !important;
+  }
+
+  /* 모바일 극소형 카드 및 덱 매칭 (갤럭시 S23 세로 높이 안넘치게) */
+  .deck-wrapper {
+    width: 42px;
+    height: 56px;
+  }
+  .deck-count {
+    font-size: 0.85rem;
+  }
+  .card-deck {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+  }
+
+  /* 유저 카드 핸드 가로 스크롤 강화 */
+  .hand-container {
+    gap: 3px;
+    padding: 1px 2px;
+    justify-content: flex-start;
   }
 
   .card {
-    width: 55px;
-    height: 78px;
-    border-radius: 5px;
-    padding: 5px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    width: 42px;
+    height: 56px;
+    border-radius: 3px;
+    padding: 2px 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.6);
   }
 
   .card-header {
-    font-size: 0.48rem;
+    font-size: 0.4rem;
   }
   .card-header i {
-    width: 8px !important;
-    height: 8px !important;
+    width: 5px !important;
+    height: 5px !important;
   }
   .attack-value {
-    font-size: 1.15rem;
-    text-shadow: 0 0 3px rgba(0,0,0,0.5);
+    font-size: 0.8rem;
+    text-shadow: 0 0 2px rgba(0,0,0,0.6);
   }
   .card-footer {
-    font-size: 0.45rem;
+    font-size: 0.35rem;
   }
 
-  /* 필드 위의 카드 크기 일치 */
+  /* 필드 위의 카드 규격 축소 */
   .played-card {
-    width: 55px;
-    height: 78px;
+    width: 42px;
+    height: 56px;
   }
 
   .card-placeholder i {
-    font-size: 1.1rem;
+    font-size: 0.8rem;
   }
   .card-placeholder span {
-    font-size: 0.55rem;
+    font-size: 0.45rem;
   }
 
-  /* 하단 제어부 크기 조절 */
+  /* 하단 컨트롤바 */
   .board-controls {
-    padding: 8px 12px;
-    height: 48px;
-    border-radius: 8px;
-  }
-
-  .controls-info {
-    font-size: 0.7rem;
-    gap: 6px;
-  }
-  .info-icon {
-    width: 14px;
-    height: 14px;
-  }
-
-  .neon-btn {
-    padding: 6px 14px;
-    font-size: 0.72rem;
+    padding: 2px 6px;
+    height: 30px;
     border-radius: 4px;
   }
 
-  /* 모달 윈도우 반응형 세밀 튜닝 */
+  .controls-info {
+    font-size: 0.6rem;
+    gap: 2px;
+  }
+  .info-icon {
+    width: 10px;
+    height: 10px;
+  }
+
+  .neon-btn {
+    padding: 2px 6px;
+    font-size: 0.62rem;
+    border-radius: 3px;
+  }
+
+  /* 모달 윈도우 모바일 오버레이 축소 */
   .glass-card {
-    padding: 20px;
-    width: 92%;
-    border-radius: 12px;
+    padding: 10px 14px;
+    width: 95%;
+    border-radius: 8px;
   }
   
   .neon-title {
-    font-size: 1.6rem;
-    letter-spacing: 2px;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
   }
   .subtitle {
-    font-size: 0.75rem;
-    margin-bottom: 15px;
-  }
-  .game-rules {
-    padding: 10px 14px;
-  }
-  .game-rules h4 {
-    font-size: 0.8rem;
+    font-size: 0.65rem;
     margin-bottom: 6px;
   }
-  .game-rules ul {
-    gap: 4px;
+  .game-rules {
+    padding: 6px 10px;
+  }
+  .game-rules h4 {
     font-size: 0.7rem;
+    margin-bottom: 2px;
+  }
+  .game-rules ul {
+    gap: 2px;
+    font-size: 0.6rem;
   }
   .start-btn {
-    width: 150px;
-    height: 38px;
-    font-size: 0.75rem;
+    width: 110px;
+    height: 28px;
+    font-size: 0.65rem;
   }
 
   /* 특수카드 결정 모달 */
   .special-preview-card {
-    width: 60px;
-    height: 85px;
+    width: 44px;
+    height: 60px;
   }
   .choice-btn {
-    height: 38px;
-    font-size: 0.78rem;
-    border-radius: 6px;
+    height: 28px;
+    font-size: 0.68rem;
+    border-radius: 4px;
+    gap: 4px;
+  }
+  .choice-btn i {
+    width: 12px;
+    height: 12px;
   }
 
   /* 방어 리액션 모달 */
   .alert-shield-icon {
-    width: 24px;
-    height: 24px;
+    width: 16px;
+    height: 16px;
   }
   .defense-status-info {
-    padding: 8px 15px;
-    gap: 12px;
-    margin-bottom: 12px;
+    padding: 4px 8px;
+    gap: 6px;
+    margin-bottom: 6px;
   }
   .atk-val, .dmg-val {
-    font-size: 1.3rem;
+    font-size: 0.95rem;
   }
   .defense-instruction {
-    font-size: 0.7rem;
-    margin-bottom: 10px;
+    font-size: 0.6rem;
+    margin-bottom: 4px;
   }
   .defense-options-container {
-    min-height: 90px;
-    padding: 5px;
-    margin-bottom: 12px;
+    min-height: 70px;
+    padding: 1px;
+    margin-bottom: 6px;
+    gap: 3px;
   }
   .defense-options-container .card {
-    width: 55px;
-    height: 78px;
+    width: 42px;
+    height: 56px;
   }
   .skip-btn {
-    font-size: 0.7rem;
+    font-size: 0.6rem;
   }
 
   /* 결과 모달 */
   .hp-num {
-    font-size: 1.5rem;
+    font-size: 1.1rem;
   }
   .result-details {
-    padding: 12px;
-    margin-bottom: 15px;
+    padding: 8px;
+    margin-bottom: 8px;
   }
   .result-summary-text {
-    font-size: 0.75rem;
+    font-size: 0.65rem;
   }
   .restart-btn {
-    width: 140px;
-    height: 38px;
+    width: 100px;
+    height: 28px;
   }
 
-  /* 팝업 수치 축소 */
+  /* 데미지 팝업 */
   .damage-num-pop, .heal-num-pop, .defense-num-pop {
-    font-size: 1.8rem;
+    font-size: 1.1rem;
   }
 }
