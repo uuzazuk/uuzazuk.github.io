@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="description" content="상대 컴퓨터와 카드 대결을 펼쳐 승리하세요! 4x3 그리드 보드 기반의 하이테크 카드 배틀 게임">
   <title>네온 아레나: 카드 배틀 게임 (V2)</title>
   <!-- Google Fonts: Orbitron & Outfit -->
@@ -29,9 +29,10 @@
         <div id="turn-badge" class="turn-badge p1-turn">P1 TURN</div>
         <div id="turn-timer" class="turn-timer">BATTLE PHASE</div>
       </div>
-      <div class="system-status">
-        <span class="pulse-dot"></span> LIVE MATCH
-      </div>
+      <!-- 모바일 배틀 로그 토글 버튼 -->
+      <button id="toggle-log-btn" class="toggle-log-btn" aria-label="로그 토글">
+        <i data-lucide="scroll-text"></i>
+      </button>
     </header>
 
     <main class="game-main">
@@ -60,16 +61,22 @@
           </div>
         </div>
 
-        <!-- 실시간 전투 로그 -->
-        <div class="log-panel">
+        <!-- 실시간 전투 로그 (모바일 슬라이드 서랍 기능 탑재) -->
+        <div class="log-panel" id="log-panel">
           <div class="log-header">
-            <i data-lucide="scroll-text"></i>
-            <h4>배틀 분석 로그</h4>
+            <div class="log-header-left">
+              <i data-lucide="scroll-text" class="log-icon"></i>
+              <h4>배틀 분석 로그</h4>
+            </div>
+            <!-- 모바일 로그 닫기 버튼 -->
+            <button id="close-log-btn" class="close-log-btn" aria-label="로그 닫기">
+              <i data-lucide="x"></i>
+            </button>
           </div>
           <div id="battle-log" class="battle-log-content">
             <div class="log-message system">네온 아레나에 입장했습니다. 게임을 시작해 주세요.</div>
           </div>
-          <!-- 가이드 범례 추가 -->
+          <!-- 가이드 범례 -->
           <div class="card-legend">
             <span class="legend-item"><span class="legend-color atk-color"></span>공격 (15장)</span>
             <span class="legend-item"><span class="legend-color heal-color"></span>회복 (5장)</span>
