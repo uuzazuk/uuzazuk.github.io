@@ -1,0 +1,1358 @@
+/* ==========================================
+   NEON ARENA CARD GAME STYLE SHEET (V2)
+   ========================================== */
+
+/* 1. 디자인 시스템 & 변수 설정 */
+:root {
+  --bg-primary: #0a0d16;
+  --bg-secondary: #121826;
+  --bg-tertiary: #1b2336;
+  --glass-bg: rgba(18, 24, 38, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  
+  /* 플레이어 컬러셋 */
+  --p1-neon: #00f0ff;
+  --p1-glow: rgba(0, 240, 255, 0.4);
+  --p1-dark: #005f73;
+  --p2-neon: #ff007f;
+  --p2-glow: rgba(255, 0, 127, 0.4);
+  --p2-dark: #800040;
+
+  /* 카드 유형별 네온 테마 */
+  --color-atk: #ef4444;      /* 공격: Red */
+  --color-heal: #10b981;     /* 회복: Emerald Green */
+  --color-def: #3b82f6;      /* 방어: Royal Blue */
+  --color-special: #ffb703;  /* 특수: Gold Yellow */
+  
+  --glow-atk: rgba(239, 68, 68, 0.4);
+  --glow-heal: rgba(16, 185, 129, 0.4);
+  --glow-def: rgba(59, 130, 246, 0.4);
+  --glow-special: rgba(255, 183, 3, 0.4);
+
+  /* 시스템 컬러 */
+  --text-primary: #f3f4f6;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  --gold: #ffb703;
+  
+  --font-main: 'Outfit', sans-serif;
+  --font-mono: 'Orbitron', sans-serif;
+  
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* 2. 기본 리셋 및 레이아웃 */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  overflow: hidden;
+  height: 100vh;
+  position: relative;
+}
+
+/* 배경 장식 */
+.glow-bg-1, .glow-bg-2 {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  filter: blur(150px);
+  z-index: -1;
+  opacity: 0.12;
+  pointer-events: none;
+}
+.glow-bg-1 {
+  background: var(--p1-neon);
+  bottom: -100px;
+  right: -100px;
+}
+.glow-bg-2 {
+  background: var(--p2-neon);
+  top: -100px;
+  left: -100px;
+}
+
+/* 메인 컨테이너 */
+.game-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 15px 25px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+/* 3. 헤더 영역 */
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--glass-border);
+  height: 60px;
+}
+
+.logo {
+  font-family: var(--font-mono);
+  font-weight: 900;
+  font-size: 1.5rem;
+  letter-spacing: 2px;
+}
+
+.neon-text {
+  color: #fff;
+  text-shadow: 0 0 5px #fff, 0 0 10px var(--p1-neon), 0 0 20px var(--p1-neon);
+}
+
+.white-text {
+  color: var(--text-primary);
+}
+
+.turn-status-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.turn-badge {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  padding: 4px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  transition: var(--transition-smooth);
+}
+
+.p1-turn {
+  background: rgba(0, 240, 255, 0.15);
+  border: 1px solid var(--p1-neon);
+  color: var(--p1-neon);
+  text-shadow: 0 0 5px var(--p1-neon);
+  animation: p1-pulse 1.5s infinite alternate;
+}
+
+.p2-turn {
+  background: rgba(255, 0, 127, 0.15);
+  border: 1px solid var(--p2-neon);
+  color: var(--p2-neon);
+  text-shadow: 0 0 5px var(--p2-neon);
+  animation: p2-pulse 1.5s infinite alternate;
+}
+
+.turn-timer {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.system-status {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #10b981;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 8px #10b981;
+  animation: blink 1s infinite alternate;
+}
+
+/* 4. 메인 컨텐츠 영역 */
+.game-main {
+  display: flex;
+  flex: 1;
+  gap: 20px;
+  padding: 15px 0;
+  height: calc(100vh - 90px);
+}
+
+/* 5. 사이드 패널 (HP 및 로그) */
+.side-panel {
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  height: 100%;
+}
+
+.player-panel {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: var(--transition-smooth);
+}
+
+.p1-panel {
+  border-left: 4px solid var(--p1-neon);
+}
+
+.p2-panel {
+  border-left: 4px solid var(--p2-neon);
+}
+
+.player-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+}
+
+.user-avatar {
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid var(--p1-neon);
+  color: var(--p1-neon);
+  box-shadow: 0 0 8px var(--p1-glow);
+}
+
+.cpu-avatar {
+  background: rgba(255, 0, 127, 0.1);
+  border: 1px solid var(--p2-neon);
+  color: var(--p2-neon);
+  box-shadow: 0 0 8px var(--p2-glow);
+}
+
+.player-details h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.player-details .status-desc {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.hp-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hp-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.hp-value {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.hp-bar-container {
+  height: 12px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.hp-bar {
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  border-radius: 5px;
+  transition: width 0.3s ease-out;
+}
+
+.p1-bar {
+  background: linear-gradient(90deg, #0077b6, var(--p1-neon));
+  box-shadow: 0 0 8px var(--p1-glow);
+}
+
+.p2-bar {
+  background: linear-gradient(90deg, #800040, var(--p2-neon));
+  box-shadow: 0 0 8px var(--p2-glow);
+}
+
+.hp-bar-shadow {
+  height: 100%;
+  background-color: rgba(239, 68, 68, 0.6);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  border-radius: 5px;
+  transition: width 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* 실시간 배틀 로그 */
+.log-panel {
+  flex: 1;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 0;
+  min-height: 150px;
+}
+
+.log-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 8px;
+}
+
+.log-header i {
+  color: var(--p1-neon);
+}
+
+.battle-log-content {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.78rem;
+  padding-right: 5px;
+}
+
+.battle-log-content::-webkit-scrollbar {
+  width: 4px;
+}
+.battle-log-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.battle-log-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+
+.log-message {
+  line-height: 1.4;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.02);
+  border-left: 2px solid transparent;
+}
+
+.log-message.system {
+  border-left-color: var(--text-muted);
+  color: var(--text-secondary);
+}
+
+.log-message.p1-action {
+  border-left-color: var(--p1-neon);
+  background: rgba(0, 240, 255, 0.03);
+}
+
+.log-message.p2-action {
+  border-left-color: var(--p2-neon);
+  background: rgba(255, 0, 127, 0.03);
+}
+
+.log-message.damage {
+  background: rgba(239, 68, 68, 0.08);
+  border-left-color: #ef4444;
+  color: #fca5a5;
+  font-weight: 600;
+}
+
+.log-message.heal {
+  background: rgba(16, 185, 129, 0.08);
+  border-left-color: #10b981;
+  color: #a7f3d0;
+  font-weight: 600;
+}
+
+.log-message.defense {
+  background: rgba(59, 130, 246, 0.08);
+  border-left-color: #3b82f6;
+  color: #bfdbfe;
+  font-weight: 600;
+}
+
+.log-message.win {
+  background: rgba(251, 191, 36, 0.08);
+  border-left-color: var(--gold);
+  color: #fde047;
+  font-weight: 700;
+}
+
+/* 카드 범례 */
+.card-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.legend-color {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.atk-color { background-color: var(--color-atk); box-shadow: 0 0 5px var(--glow-atk); }
+.heal-color { background-color: var(--color-heal); box-shadow: 0 0 5px var(--glow-heal); }
+.def-color { background-color: var(--color-def); box-shadow: 0 0 5px var(--glow-def); }
+.spec-color { background-color: var(--color-special); box-shadow: 0 0 5px var(--glow-special); }
+
+/* 6. 메인 아레나 보드 (4행 3열 그리드) */
+.board-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  height: 100%;
+}
+
+.game-board {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 12px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  position: relative;
+}
+
+/* 그리드 셀 공통 */
+.board-cell {
+  position: relative;
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  transition: var(--transition-smooth);
+}
+
+/* 셀의 레이블(이름) */
+.slot-label {
+  position: absolute;
+  top: 6px;
+  left: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  z-index: 5;
+}
+
+.empty-slot {
+  border: none;
+  background: transparent;
+  pointer-events: none;
+}
+
+/* 7. 카드 덱 스타일링 */
+.deck-wrapper {
+  perspective: 800px;
+  width: 90px;
+  height: 130px;
+}
+
+.card-deck {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  position: relative;
+  cursor: not-allowed;
+  transition: var(--transition-bounce);
+  transform-style: preserve-3d;
+}
+
+.user-deck {
+  background: linear-gradient(135deg, var(--p1-dark), var(--p1-neon));
+  border: 2px solid var(--p1-neon);
+  box-shadow: 0 4px 15px var(--p1-glow), 0 2px 0 #0096c7, 0 4px 0 #0077b6;
+}
+
+.cpu-deck {
+  background: linear-gradient(135deg, var(--p2-dark), var(--p2-neon));
+  border: 2px solid var(--p2-neon);
+  box-shadow: 0 4px 15px var(--p2-glow), 0 -2px 0 #a20050, 0 -4px 0 #800040;
+}
+
+.deck-inner {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(255,255,255,0.05) 5px, rgba(255,255,255,0.05) 10px);
+  border-radius: 6px;
+}
+
+.deck-count {
+  font-family: var(--font-mono);
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* 8. 핸드(Hand) 영역 */
+.hand-container {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 5px;
+}
+
+.hand-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* 9. 개별 카드 디자인 */
+.card {
+  width: 80px;
+  height: 110px;
+  border-radius: 8px;
+  background: rgba(18, 24, 38, 0.9);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 8px;
+  position: relative;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  transition: var(--transition-bounce);
+  transform-style: preserve-3d;
+  flex-shrink: 0;
+}
+
+/* 카드 타입별 테두리 및 그림자 (디테일 튜닝) */
+.card[data-type="attack"] {
+  border-color: rgba(239, 68, 68, 0.4);
+  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.15);
+}
+.card[data-type="attack"] i { color: var(--color-atk); }
+.card[data-type="attack"]:hover {
+  border-color: var(--color-atk);
+  box-shadow: 0 6px 15px var(--glow-atk);
+}
+
+.card[data-type="heal"] {
+  border-color: rgba(16, 185, 129, 0.4);
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.15);
+}
+.card[data-type="heal"] i { color: var(--color-heal); }
+.card[data-type="heal"]:hover {
+  border-color: var(--color-heal);
+  box-shadow: 0 6px 15px var(--glow-heal);
+}
+
+.card[data-type="defense"] {
+  border-color: rgba(59, 130, 246, 0.4);
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.15);
+}
+.card[data-type="defense"] i { color: var(--color-def); }
+.card[data-type="defense"]:hover {
+  border-color: var(--color-def);
+  box-shadow: 0 6px 15px var(--glow-def);
+}
+
+.card[data-type="special"] {
+  border-color: rgba(255, 183, 3, 0.4);
+  box-shadow: 0 2px 6px rgba(255, 183, 3, 0.15);
+}
+.card[data-type="special"] i { color: var(--color-special); }
+
+/* 유저 카드 호버 시 조절 */
+.user-card:hover {
+  transform: translateY(-12px) scale(1.06);
+  z-index: 10;
+}
+
+/* 방어 불가 카드(비활성화 톤) */
+.card.unplayable {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.card.unplayable:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* 비공개 카드 (컴퓨터 핸드) */
+.card.back {
+  background: linear-gradient(135deg, #1b2336, #0e1320);
+  border: 2px dashed rgba(255, 255, 255, 0.15);
+  cursor: not-allowed;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.card.back .card-pattern {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--text-muted);
+  font-size: 1.5rem;
+}
+
+/* 카드 내부 구성 */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  color: var(--text-secondary);
+}
+
+.card-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+}
+
+.attack-value {
+  font-family: var(--font-mono);
+  font-size: 1.7rem;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+  font-size: 0.55rem;
+  color: var(--text-muted);
+}
+
+/* 수치 등급별 디자인 커스텀 */
+.card[data-atk="30"] {
+  animation: rainbow-border 3s infinite linear;
+}
+.card[data-atk="30"] .attack-value {
+  color: var(--gold);
+  text-shadow: 0 0 8px rgba(255, 183, 3, 0.6);
+}
+
+/* 10. 배틀 존 (Played Card) */
+.battle-zone {
+  background: rgba(18, 24, 38, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6);
+  overflow: visible;
+}
+
+.played-card-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+}
+
+.card-placeholder i {
+  font-size: 1.8rem;
+  opacity: 0.4;
+}
+
+.card-placeholder span {
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+}
+
+/* 배틀 필드 위에 낸 카드 스타일 */
+.played-card {
+  width: 85px;
+  height: 120px;
+  animation: card-entry 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.played-card.cpu-played {
+  border-color: var(--p2-neon);
+  box-shadow: 0 0 15px var(--p2-glow);
+}
+
+.played-card.user-played {
+  border-color: var(--p1-neon);
+  box-shadow: 0 0 15px var(--p1-glow);
+}
+
+/* 11. 하단 컨트롤바 */
+.board-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 12px 20px;
+  height: 60px;
+}
+
+.controls-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.info-icon {
+  color: var(--p1-neon);
+  width: 18px;
+  height: 18px;
+}
+
+.neon-btn {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--text-primary);
+  padding: 8px 24px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: var(--transition-smooth);
+}
+
+.neon-btn:hover:not(.disabled) {
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+}
+
+.neon-btn.disabled, .neon-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  border-color: var(--text-muted);
+  color: var(--text-muted);
+}
+
+#end-turn-btn:not(.disabled):not(:disabled) {
+  border-color: var(--p1-neon);
+  color: var(--p1-neon);
+}
+#end-turn-btn:not(.disabled):not(:disabled):hover {
+  background: var(--p1-neon);
+  color: var(--bg-primary);
+  box-shadow: 0 0 15px var(--p1-glow);
+}
+
+/* 12. 모달 윈도우 레이아웃 */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(6, 9, 17, 0.88);
+  backdrop-filter: blur(14px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.glass-card {
+  background: rgba(18, 24, 38, 0.85);
+  border: 2px solid var(--glass-border);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), inset 0 0 30px rgba(255, 255, 255, 0.03);
+  border-radius: 20px;
+  padding: 30px 40px;
+  width: 90%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transform: scale(0.92);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.15);
+}
+
+.modal-overlay.active .glass-card {
+  transform: scale(1);
+}
+
+.neon-title {
+  font-family: var(--font-mono);
+  font-size: 2.2rem;
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: #fff;
+  text-shadow: 0 0 10px #fff, 0 0 20px var(--p1-neon), 0 0 40px var(--p1-neon);
+  margin-bottom: 8px;
+}
+
+.neon-title.gold-title {
+  text-shadow: 0 0 10px #fff, 0 0 20px var(--color-special), 0 0 40px var(--color-special);
+}
+
+.neon-title.blue-title {
+  text-shadow: 0 0 10px #fff, 0 0 20px var(--color-def), 0 0 40px var(--color-def);
+}
+
+.neon-title.red-title {
+  text-shadow: 0 0 10px #fff, 0 0 20px var(--color-atk), 0 0 40px var(--color-atk);
+}
+
+.subtitle {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 25px;
+}
+
+.modal-body {
+  width: 100%;
+  margin-bottom: 25px;
+}
+
+.game-rules {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 16px 20px;
+  text-align: left;
+}
+
+.game-rules h4 {
+  font-size: 0.95rem;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--p1-neon);
+}
+
+.game-rules ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.game-rules ul li {
+  position: relative;
+  padding-left: 14px;
+  line-height: 1.4;
+}
+
+.game-rules ul li::before {
+  content: "•";
+  color: var(--p1-neon);
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+}
+
+.start-btn {
+  width: 200px;
+  height: 46px;
+  border-color: var(--p1-neon);
+  color: var(--p1-neon);
+  border-radius: 23px;
+}
+.start-btn:hover {
+  background: var(--p1-neon);
+  color: var(--bg-primary);
+  box-shadow: 0 0 20px var(--p1-glow);
+}
+
+/* 13. 신규 모달 디자인 (특수카드, 방어) */
+.special-card-preview {
+  margin-bottom: 25px;
+  perspective: 800px;
+}
+
+.special-preview-card {
+  width: 90px;
+  height: 125px;
+  border-color: var(--color-special);
+  box-shadow: 0 0 15px var(--glow-special);
+  animation: card-float 2s infinite ease-in-out;
+}
+
+.gold-glow-icon {
+  color: var(--color-special);
+  filter: drop-shadow(0 0 3px var(--color-special));
+}
+
+.choice-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.choice-btn {
+  width: 100%;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  transition: var(--transition-smooth);
+}
+
+.choice-btn i {
+  width: 18px;
+  height: 18px;
+}
+
+.atk-choice-btn:hover {
+  border-color: var(--color-atk);
+  background: rgba(239, 68, 68, 0.1);
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+}
+.atk-choice-btn i { color: var(--color-atk); }
+
+.def-choice-btn:hover {
+  border-color: var(--color-def);
+  background: rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+}
+.def-choice-btn i { color: var(--color-def); }
+
+.heal-choice-btn:hover {
+  border-color: var(--color-heal);
+  background: rgba(16, 185, 129, 0.1);
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+}
+.heal-choice-btn i { color: var(--color-heal); }
+
+/* 방어 리액션 모달 세부 */
+.defense-alert-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.alert-shield-icon {
+  width: 32px;
+  height: 32px;
+  color: var(--color-atk);
+  animation: blink 0.8s infinite alternate;
+}
+
+.defense-status-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 15px 25px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.incoming-atk, .reduced-atk {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.incoming-atk .label, .reduced-atk .label {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.atk-val {
+  font-family: var(--font-mono);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--color-atk);
+  text-shadow: 0 0 5px var(--glow-atk);
+}
+
+.dmg-val {
+  font-family: var(--font-mono);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.vs-arrow {
+  color: var(--text-muted);
+}
+
+.defense-instruction {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 15px;
+}
+
+.defense-options-container {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 10px 5px;
+  background: rgba(255, 255, 255, 0.01);
+  border-radius: 12px;
+  margin-bottom: 20px;
+  min-height: 120px;
+}
+
+.defense-options-container .card {
+  width: 75px;
+  height: 100px;
+}
+
+.defense-options-container .card:hover {
+  transform: translateY(-8px) scale(1.05);
+}
+
+.defense-action-footer {
+  width: 100%;
+}
+
+.skip-btn {
+  background: transparent;
+  color: var(--text-muted);
+  border: none;
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: var(--transition-smooth);
+}
+.skip-btn:hover {
+  color: var(--text-secondary);
+}
+
+/* 결과 모달의 커스텀 스타일 */
+.result-card {
+  border-color: var(--p1-neon);
+}
+
+.result-card.lose {
+  border-color: var(--p2-neon);
+}
+
+.result-card.lose .neon-title {
+  text-shadow: 0 0 10px #fff, 0 0 20px var(--p2-neon), 0 0 40px var(--p2-neon);
+}
+
+.result-badge {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  background: rgba(251, 191, 36, 0.15);
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  padding: 4px 14px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+}
+
+.result-details {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 20px;
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.result-hp-compare {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+  margin-bottom: 15px;
+}
+
+.hp-final {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.hp-final .player-name {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.hp-num {
+  font-family: var(--font-mono);
+  font-size: 2.2rem;
+  font-weight: 900;
+}
+
+.p1-color {
+  color: var(--p1-neon);
+  text-shadow: 0 0 8px var(--p1-glow);
+}
+
+.p2-color {
+  color: var(--p2-neon);
+  text-shadow: 0 0 8px var(--p2-glow);
+}
+
+.vs-text {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-weight: bold;
+}
+
+.result-summary-text {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.restart-btn {
+  width: 180px;
+  height: 44px;
+  border-radius: 22px;
+}
+
+/* 14. 데미지/회복/방패 수치 플로팅 애니메이션용 */
+.damage-popup-layer {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  z-index: 50;
+  overflow: visible;
+}
+
+.damage-num-pop {
+  font-family: var(--font-mono);
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--color-atk);
+  text-shadow: 0 0 8px var(--glow-atk), 0 2px 4px rgba(0,0,0,0.8);
+  animation: floatUp 0.8s cubic-bezier(0.215, 0.610, 0.355, 1) forwards;
+}
+
+.heal-num-pop {
+  font-family: var(--font-mono);
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--color-heal);
+  text-shadow: 0 0 8px var(--glow-heal), 0 2px 4px rgba(0,0,0,0.8);
+  animation: floatUp 0.8s cubic-bezier(0.215, 0.610, 0.355, 1) forwards;
+}
+
+.defense-num-pop {
+  font-family: var(--font-mono);
+  font-size: 2.3rem;
+  font-weight: 900;
+  color: var(--color-def);
+  text-shadow: 0 0 8px var(--glow-def), 0 2px 4px rgba(0,0,0,0.8);
+  animation: floatUp 0.8s cubic-bezier(0.215, 0.610, 0.355, 1) forwards;
+}
+
+/* 15. 화면 흔들림 효과 */
+.shake {
+  animation: screen-shake 0.35s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+/* 16. 키프레임 애니메이션 모음 */
+@keyframes p1-pulse {
+  from {
+    box-shadow: 0 0 4px rgba(0, 240, 255, 0.1), inset 0 0 4px rgba(0, 240, 255, 0.1);
+  }
+  to {
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.4), inset 0 0 6px rgba(0, 240, 255, 0.2);
+  }
+}
+
+@keyframes p2-pulse {
+  from {
+    box-shadow: 0 0 4px rgba(255, 0, 127, 0.1), inset 0 0 4px rgba(255, 0, 127, 0.1);
+  }
+  to {
+    box-shadow: 0 0 12px rgba(255, 0, 127, 0.4), inset 0 0 6px rgba(255, 0, 127, 0.2);
+  }
+}
+
+@keyframes blink {
+  from { opacity: 0.4; }
+  to { opacity: 1; }
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(20px) scale(0.6);
+    opacity: 0;
+  }
+  20% {
+    transform: translateY(-5px) scale(1.1);
+    opacity: 1;
+  }
+  80% {
+    transform: translateY(-25px) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-45px) scale(0.85);
+    opacity: 0;
+  }
+}
+
+@keyframes screen-shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
+  40%, 60% { transform: translate3d(3px, 0, 0); }
+}
+
+@keyframes card-entry {
+  from {
+    transform: translateY(50px) scale(0.5) rotate(-10deg);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes card-float {
+  0% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(1deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+
+@keyframes rainbow-border {
+  0% { border-color: var(--gold); }
+  33% { border-color: var(--p1-neon); }
+  66% { border-color: var(--p2-neon); }
+  100% { border-color: var(--gold); }
+}
+
+/* 반응형 크기 조절 */
+@media (max-height: 800px) {
+  .game-container { padding: 10px 15px; }
+  .game-header { height: 50px; }
+  .game-main { height: calc(100vh - 75px); }
+  .game-board { gap: 8px; }
+  .card-deck { width: 75px; height: 110px; }
+  .card { width: 70px; height: 95px; }
+  .attack-value { font-size: 1.5rem; }
+  .played-card { width: 75px; height: 105px; }
+  .defense-options-container { min-height: 105px; }
+  .defense-options-container .card { width: 68px; height: 90px; }
+}
+
+@media (max-width: 1024px) {
+  .game-main {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .side-panel {
+    width: 100%;
+    flex-direction: row;
+    height: auto;
+  }
+  .player-panel {
+    flex: 1;
+  }
+  .log-panel {
+    display: none;
+  }
+  .board-area {
+    flex: 2;
+    min-height: 500px;
+  }
+}

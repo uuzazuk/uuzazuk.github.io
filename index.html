@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="상대 컴퓨터와 카드 대결을 펼쳐 승리하세요! 4x3 그리드 보드 기반의 하이테크 카드 배틀 게임">
+  <title>네온 아레나: 카드 배틀 게임 (V2)</title>
+  <!-- Google Fonts: Orbitron & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app" class="game-container">
+    
+    <!-- 배경 글로우 데코레이션 -->
+    <div class="glow-bg-1"></div>
+    <div class="glow-bg-2"></div>
+
+    <!-- 헤더 영역 (현재 턴 및 배틀 타이틀) -->
+    <header class="game-header">
+      <div class="logo">
+        <span class="neon-text">NEON</span> <span class="white-text">ARENA</span>
+      </div>
+      <div class="turn-status-panel">
+        <div id="turn-badge" class="turn-badge p1-turn">P1 TURN</div>
+        <div id="turn-timer" class="turn-timer">BATTLE PHASE</div>
+      </div>
+      <div class="system-status">
+        <span class="pulse-dot"></span> LIVE MATCH
+      </div>
+    </header>
+
+    <main class="game-main">
+      <!-- 왼쪽 사이드바: 플레이어 정보 및 상태 로그 -->
+      <section class="side-panel">
+        <!-- P2 (컴퓨터) 정보 카드 -->
+        <div class="player-panel p2-panel">
+          <div class="player-meta">
+            <div class="avatar cpu-avatar">
+              <i data-lucide="cpu"></i>
+            </div>
+            <div class="player-details">
+              <h3>P2 (COMPUTER)</h3>
+              <span class="status-desc">인공지능 대전 상대</span>
+            </div>
+          </div>
+          <div class="hp-section">
+            <div class="hp-label">
+              <span>HP</span>
+              <span id="p2-hp-text" class="hp-value">100/100</span>
+            </div>
+            <div class="hp-bar-container">
+              <div id="p2-hp-bar" class="hp-bar p2-bar" style="width: 100%;"></div>
+              <div id="p2-hp-bar-shadow" class="hp-bar-shadow" style="width: 100%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 실시간 전투 로그 -->
+        <div class="log-panel">
+          <div class="log-header">
+            <i data-lucide="scroll-text"></i>
+            <h4>배틀 분석 로그</h4>
+          </div>
+          <div id="battle-log" class="battle-log-content">
+            <div class="log-message system">네온 아레나에 입장했습니다. 게임을 시작해 주세요.</div>
+          </div>
+          <!-- 가이드 범례 추가 -->
+          <div class="card-legend">
+            <span class="legend-item"><span class="legend-color atk-color"></span>공격 (15장)</span>
+            <span class="legend-item"><span class="legend-color heal-color"></span>회복 (5장)</span>
+            <span class="legend-item"><span class="legend-color def-color"></span>방어 (5장)</span>
+            <span class="legend-item"><span class="legend-color spec-color"></span>특수 (5장)</span>
+          </div>
+        </div>
+
+        <!-- P1 (유저) 정보 카드 -->
+        <div class="player-panel p1-panel">
+          <div class="player-meta">
+            <div class="avatar user-avatar">
+              <i data-lucide="user"></i>
+            </div>
+            <div class="player-details">
+              <h3>P1 (USER)</h3>
+              <span class="status-desc">도전자</span>
+            </div>
+          </div>
+          <div class="hp-section">
+            <div class="hp-label">
+              <span>HP</span>
+              <span id="p1-hp-text" class="hp-value">100/100</span>
+            </div>
+            <div class="hp-bar-container">
+              <div id="p1-hp-bar" class="hp-bar p1-bar" style="width: 100%;"></div>
+              <div id="p1-hp-bar-shadow" class="hp-bar-shadow" style="width: 100%;"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 중앙/우측 메인 보드: 4행 3열 그리드 판 -->
+      <section class="board-area">
+        <div class="game-board">
+          
+          <!-- [1행 1열] P2 덱 슬롯 -->
+          <div class="board-cell cell-1-1" id="p2-deck-slot">
+            <div class="slot-label">P2 DECK</div>
+            <div class="deck-wrapper">
+              <div id="p2-deck" class="card-deck cpu-deck">
+                <div class="deck-inner">
+                  <span id="p2-deck-count" class="deck-count">30</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- [1행 2열] P2 비공개 카드 (핸드) 슬롯 -->
+          <div class="board-cell cell-1-2" id="p2-hand-slot">
+            <div class="slot-label">P2 HAND</div>
+            <div id="p2-hand-container" class="hand-container cpu-hand">
+              <!-- JS를 통해 뒷면 카드 렌더링 -->
+            </div>
+          </div>
+
+          <!-- [1행 3열] 빈 슬롯 -->
+          <div class="board-cell cell-1-3 empty-slot"></div>
+
+          <!-- [2행 1열] 빈 슬롯 -->
+          <div class="board-cell cell-2-1 empty-slot"></div>
+
+          <!-- [2행 2열] P2 이전에 사용한 카드 표시 -->
+          <div class="board-cell cell-2-2 battle-zone" id="p2-played-slot">
+            <div class="slot-label">P2 PLAYED CARD</div>
+            <div id="p2-played-card-container" class="played-card-container">
+              <div class="card-placeholder">
+                <i data-lucide="swords"></i>
+                <span>대기 중</span>
+              </div>
+            </div>
+            <div id="p2-damage-popup" class="damage-popup-layer"></div>
+          </div>
+
+          <!-- [2행 3열] 빈 슬롯 -->
+          <div class="board-cell cell-2-3 empty-slot"></div>
+
+          <!-- [3행 1열] 빈 슬롯 -->
+          <div class="board-cell cell-3-1 empty-slot"></div>
+
+          <!-- [3행 2열] P1 이전에 사용한 카드 표시 -->
+          <div class="board-cell cell-3-2 battle-zone" id="p1-played-slot">
+            <div class="slot-label">P1 PLAYED CARD</div>
+            <div id="p1-played-card-container" class="played-card-container">
+              <div class="card-placeholder">
+                <i data-lucide="swords"></i>
+                <span>대기 중</span>
+              </div>
+            </div>
+            <div id="p1-damage-popup" class="damage-popup-layer"></div>
+          </div>
+
+          <!-- [3행 3열] 빈 슬롯 -->
+          <div class="board-cell cell-3-3 empty-slot"></div>
+
+          <!-- [4행 1열] 빈 슬롯 -->
+          <div class="board-cell cell-4-1 empty-slot"></div>
+
+          <!-- [4행 2열] P1 핸드 슬롯 -->
+          <div class="board-cell cell-4-2" id="p1-hand-slot">
+            <div class="slot-label">P1 HAND</div>
+            <div id="p1-hand-container" class="hand-container user-hand">
+              <!-- JS를 통해 유저 카드 렌더링 -->
+            </div>
+          </div>
+
+          <!-- [4행 3열] P1 덱 슬롯 -->
+          <div class="board-cell cell-4-3" id="p1-deck-slot">
+            <div class="slot-label">P1 DECK</div>
+            <div class="deck-wrapper">
+              <div id="p1-deck" class="card-deck user-deck">
+                <div class="deck-inner">
+                  <span id="p1-deck-count" class="deck-count">30</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 하단 컨트롤 영역 (메시지 및 턴 종료 단추 등) -->
+        <div class="board-controls">
+          <div class="controls-info">
+            <i data-lucide="info" class="info-icon"></i>
+            <span id="instruction-text">자신의 턴입니다. 핸드에서 카드를 선택해 필드에 내세요!</span>
+          </div>
+          <button id="end-turn-btn" class="neon-btn disabled" disabled>턴 종료</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- 1. 시작 화면 모달 -->
+    <div id="start-modal" class="modal-overlay active">
+      <div class="modal-content glass-card">
+        <h2 class="neon-title">NEON ARENA</h2>
+        <p class="subtitle">디지털 카드 배틀 시뮬레이터 (V2)</p>
+        
+        <div class="modal-body">
+          <div class="game-rules">
+            <h4><i data-lucide="help-circle"></i> 신규 게임 규칙 안내</h4>
+            <ul>
+              <li>덱은 총 <strong>30장</strong>으로 구성되며 4가지 카드가 포함됩니다.</li>
+              <li>⚔️ <strong>공격 카드 (15장)</strong>: 10~30 공격력으로 적 생명력을 직접 깎습니다.</li>
+              <li>❤️ <strong>회복 카드 (5장)</strong>: 10~20 회복력으로 아군 생명력을 회복합니다. (최대 100)</li>
+              <li>🛡️ <strong>방어 카드 (5장)</strong>: 5~10 방어력을 가집니다. 상대방 공격 턴에 패에서 소모하여 들어오는 피해를 경감시킵니다.</li>
+              <li>🌟 <strong>특수 카드 (5장)</strong>: 10~30의 잠재력을 지니며, <strong>카드를 뽑는 순간</strong> 공격/방어/회복 중 하나를 직접 선택해 변환시킵니다.</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button id="start-game-btn" class="neon-btn start-btn">아레나 입장하기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. 특수 카드 변환 모달 -->
+    <div id="special-modal" class="modal-overlay">
+      <div class="modal-content glass-card special-choice-card">
+        <h2 class="neon-title gold-title">SPECIAL DETECTED</h2>
+        <p class="subtitle">특수 카드의 변환 속성을 결정하세요</p>
+        
+        <div class="special-card-preview">
+          <div class="card special-preview-card">
+            <div class="card-header">
+              <span>VAL</span>
+              <i data-lucide="sparkles" class="gold-glow-icon"></i>
+            </div>
+            <div class="card-body">
+              <span id="special-preview-value" class="attack-value">25</span>
+            </div>
+            <div class="card-footer">
+              <span>SPECIAL</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="choice-buttons">
+          <button id="special-choose-atk" class="choice-btn atk-choice-btn">
+            <i data-lucide="swords"></i> 공격 카드로 변환
+          </button>
+          <button id="special-choose-def" class="choice-btn def-choice-btn">
+            <i data-lucide="shield"></i> 방어 카드로 변환
+          </button>
+          <button id="special-choose-heal" class="choice-btn heal-choice-btn">
+            <i data-lucide="heart"></i> 회복 카드로 변환
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. 방어 리액션 대기 모달 (상대가 공격 시) -->
+    <div id="defense-modal" class="modal-overlay">
+      <div class="modal-content glass-card defense-choice-card">
+        <div class="defense-alert-header">
+          <i data-lucide="shield-alert" class="alert-shield-icon"></i>
+          <h2 class="neon-title red-title">UNDER ATTACK</h2>
+        </div>
+        <p class="subtitle">상대의 위협적인 공격이 시작됩니다!</p>
+        
+        <div class="defense-status-info">
+          <div class="incoming-atk">
+            <span class="label">적 공격 데미지</span>
+            <span id="incoming-atk-value" class="atk-val">24</span>
+          </div>
+          <div class="vs-arrow"><i data-lucide="chevrons-right"></i></div>
+          <div class="reduced-atk">
+            <span class="label">방어 후 피해량</span>
+            <span id="predicted-damage-value" class="dmg-val">24</span>
+          </div>
+        </div>
+        
+        <p class="defense-instruction">패에 있는 방어 카드를 선택하면 데미지를 감쇄시킵니다.</p>
+        
+        <!-- 방어 카드 리스트 표시부 -->
+        <div id="defense-cards-list" class="defense-options-container">
+          <!-- JS에서 동적으로 보유한 방어 카드를 리스트업 -->
+        </div>
+        
+        <div class="defense-action-footer">
+          <button id="defense-skip-btn" class="skip-btn">방어 카드 사용 안 함 (전체 피해 감수)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. 결과 화면 모달 -->
+    <div id="result-modal" class="modal-overlay">
+      <div class="modal-content glass-card result-card">
+        <div id="result-badge" class="result-badge">WINNER</div>
+        <h2 id="result-title" class="neon-title winner-title">VICTORY</h2>
+        
+        <div class="result-details">
+          <div class="result-hp-compare">
+            <div class="hp-final">
+              <span class="player-name">P1 (USER)</span>
+              <span id="final-p1-hp" class="hp-num p1-color">85</span>
+            </div>
+            <div class="vs-text">VS</div>
+            <div class="hp-final">
+              <span class="player-name">P2 (CPU)</span>
+              <span id="final-p2-hp" class="hp-num p2-color">0</span>
+            </div>
+          </div>
+          <p id="result-summary" class="result-summary-text">축하합니다! 뛰어난 전술로 인공지능을 격파했습니다.</p>
+        </div>
+
+        <div class="modal-footer">
+          <button id="restart-game-btn" class="neon-btn restart-btn">다시 시작</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
