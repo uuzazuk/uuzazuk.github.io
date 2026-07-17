@@ -372,12 +372,6 @@ body {
   font-size: 0.78rem;
   padding-right: 5px;
 }
-.battle-log-content::-webkit-scrollbar { width: 4px; }
-.battle-log-content::-webkit-scrollbar-track { background: transparent; }
-.battle-log-content::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 2px;
-}
 
 .log-message {
   line-height: 1.4;
@@ -527,7 +521,6 @@ body {
   overflow-y: hidden;
   padding: 5px;
 }
-.hand-container::-webkit-scrollbar { display: none; }
 
 /* 9. 개별 카드 디자인 */
 .card {
@@ -917,19 +910,6 @@ body {
    18. 모바일 전용 반응형 스타일 (Max-width: 480px - 극단적 공간 절약)
    ========================================== */
 @media (max-width: 768px) {
-  /* 모바일 스크롤바 스타일 최적화 */
-  ::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
-  }
-  ::-webkit-scrollbar-track {
-    background: #0a0d16;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: var(--p1-neon);
-    border-radius: 2px;
-  }
-
   /* 모바일 세로/가로 스크롤 허용 및 고정 높이 해제 (html 노드 추가 포함) */
   html, body {
     overflow: auto !important;
@@ -1043,7 +1023,7 @@ body {
   /* 4x3 그리드 보드 세로 맞춤화 */
   .board-area {
     gap: 4px;
-    min-height: 380px; /* 세로 찌그러짐을 방지하기 위한 최소 권장 높이 확보 */
+    min-height: 250px; /* 카드가 세로형으로 복구됨에 따라 min-height를 250px로 조정 */
     flex: none; /* 스크롤 활성화를 위해 flex-grow 해제 */
     display: flex;
     flex-direction: column;
@@ -1054,13 +1034,13 @@ body {
     border-radius: 8px;
     padding: 2px;
     gap: 3px;
-    height: 320px; /* 그리드가 모바일 폰에서 너무 압축되거나 찌그러지지 않도록 고정 높이 지정 */
-    min-height: 320px;
+    height: 200px; /* 카드가 세로형 52px로 커짐에 맞춰 200px로 상향 조정 */
+    min-height: 200px;
   }
 
   .board-cell {
     border-radius: 4px;
-    padding: 1px;
+    padding: 2px;
     min-width: 0; /* 내부 flex 아이템 찌그러짐 허용 */
   }
 
@@ -1069,16 +1049,32 @@ body {
     display: none !important;
   }
 
-  /* 모바일 극소형 카드 및 덱 매칭 (갤럭시 S23 세로 높이 안넘치게) */
+  /* 모바일 극소형 코인 스타일의 덱 렌더링 */
   .deck-wrapper {
-    width: 38px;
-    height: 52px;
+    width: 24px !important;
+    height: 24px !important;
   }
   .deck-count {
-    font-size: 0.8rem;
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
   }
   .card-deck {
-    box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+    border-radius: 50% !important; /* 동그란 칩 형태로 극소화 */
+    border-width: 1px !important;
+  }
+  .user-deck {
+    border-color: var(--p1-neon) !important;
+    background: linear-gradient(135deg, var(--p1-dark), var(--p1-neon)) !important;
+    box-shadow: 0 0 5px var(--p1-glow) !important;
+  }
+  .cpu-deck {
+    border-color: var(--p2-neon) !important;
+    background: linear-gradient(135deg, var(--p2-dark), var(--p2-neon)) !important;
+    box-shadow: 0 0 5px var(--p2-glow) !important;
+  }
+  .deck-inner {
+    border-radius: 50% !important;
+    background-image: none !important;
   }
 
   /* 유저 카드 핸드 가로 스크롤 강화 */
@@ -1089,46 +1085,94 @@ body {
     min-width: 0; /* 가로 스크롤 시 부모 셀을 무단으로 늘리지 않도록 함 */
   }
 
+  /* 바닥의 널어놓은 카드 이전 세로 규격 복원 (38px x 52px) */
   .card {
-    width: 38px;
-    height: 52px;
-    border-radius: 3px;
-    padding: 2px 3px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+    width: 38px !important;
+    height: 52px !important;
+    border-radius: 4px !important;
+    padding: 3px 2px !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.5) !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    align-items: stretch !important;
+    font-size: 0.5rem !important;
+    border-width: 1.5px !important;
   }
 
   .card-header {
-    font-size: 0.35rem;
+    font-size: 0.45rem !important;
+    padding: 0 2px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    flex-direction: row !important;
+    flex: none !important;
+  }
+  .card-header span {
+    display: inline !important;
   }
   .card-header i {
-    width: 5px !important;
-    height: 5px !important;
+    display: inline-block !important; /* 아이콘 복원 */
+    width: 6px !important;
+    height: 6px !important;
+  }
+  .card-body {
+    padding: 0 !important;
+    margin: 0 !important;
+    flex: 1 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
   }
   .attack-value {
-    font-size: 0.75rem;
-    text-shadow: 0 0 2px rgba(0,0,0,0.6);
+    font-size: 0.85rem !important;
+    line-height: 1 !important;
+    font-weight: 900 !important;
+    text-shadow: 0 0 2px rgba(0,0,0,0.6) !important;
   }
   .card-footer {
-    font-size: 0.3rem;
+    display: flex !important; /* VALUE 복원 */
+    justify-content: flex-end !important;
+    font-size: 0.35rem !important;
+    color: var(--text-muted) !important;
+    padding: 0 2px !important;
   }
 
-  /* 필드 위의 카드 규격 축소 */
+  /* 카드 뒷면 세로형 정렬 패치 */
+  .card.back .card-pattern {
+    font-size: 0.6rem !important;
+    position: absolute !important;
+    top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+  .card.back .card-pattern i {
+    width: 12px !important;
+    height: 12px !important;
+  }
+
+  /* 필드 위의 카드 규격 복원 */
   .played-card {
-    width: 38px;
-    height: 52px;
+    width: 38px !important;
+    height: 52px !important;
   }
 
+  .card-placeholder {
+    flex-direction: column !important;
+    gap: 2px !important;
+  }
   .card-placeholder i {
-    font-size: 0.8rem;
+    font-size: 0.65rem !important;
   }
   .card-placeholder span {
-    font-size: 0.45rem;
+    font-size: 0.45rem !important;
   }
 
-  /* 하단 컨트롤바 */
+  /* 하단 컨트롤바 납작 알림창으로 변경 */
   .board-controls {
-    padding: 2px 6px;
-    height: 30px;
+    padding: 4px 6px;
+    height: auto !important;
     border-radius: 4px;
   }
 
@@ -1139,6 +1183,30 @@ body {
   .info-icon {
     width: 10px;
     height: 10px;
+  }
+
+  /* 턴 종료 버튼 우측 중간 플로팅 고정 */
+  #end-turn-btn {
+    position: fixed !important;
+    right: 8px !important;
+    top: 55% !important;
+    transform: translateY(-50%) !important;
+    z-index: 999 !important;
+    padding: 8px 10px !important;
+    font-size: 0.7rem !important;
+    border-radius: 6px !important;
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.3), 0 4px 8px rgba(0, 0, 0, 0.5) !important;
+    background-color: var(--bg-secondary) !important;
+  }
+  #end-turn-btn:not(.disabled):not(:disabled) {
+    border-color: var(--p1-neon) !important;
+    color: var(--p1-neon) !important;
+  }
+  #end-turn-btn.disabled, #end-turn-btn:disabled {
+    border-color: var(--text-muted) !important;
+    color: var(--text-muted) !important;
+    opacity: 0.5 !important;
+    box-shadow: none !important;
   }
 
   .neon-btn {
@@ -1171,7 +1239,7 @@ body {
   }
   .game-rules ul {
     gap: 2px;
-    font-size: 0.6rem;
+    font-size: 0.65rem;
   }
   .start-btn {
     width: 110px;
@@ -1181,8 +1249,8 @@ body {
 
   /* 특수카드 결정 모달 */
   .special-preview-card {
-    width: 38px;
-    height: 52px;
+    width: 38px !important;
+    height: 52px !important;
   }
   .choice-btn {
     height: 28px;
@@ -1213,14 +1281,14 @@ body {
     margin-bottom: 4px;
   }
   .defense-options-container {
-    min-height: 64px;
+    min-height: 60px !important; /* 복원된 카드 높이에 맞게 다시 확보 */
     padding: 1px;
     margin-bottom: 6px;
     gap: 3px;
   }
   .defense-options-container .card {
-    width: 38px;
-    height: 52px;
+    width: 38px !important;
+    height: 52px !important;
   }
   .skip-btn {
     font-size: 0.6rem;
