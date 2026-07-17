@@ -981,6 +981,9 @@ body {
   .player-details h3 {
     font-size: 0.65rem;
   }
+  .status-desc {
+    display: none !important; /* 모바일 가로 너비 단축을 위해 설명글 완전 숨김 */
+  }
 
   .hp-section {
     flex: 1;
@@ -1020,6 +1023,7 @@ body {
   }
 
   .game-board {
+    grid-template-columns: repeat(3, minmax(0, 1fr)); /* 자식 요소 크기로 인해 보드가 가로로 늘어나는 것 방지 */
     border-radius: 8px;
     padding: 2px;
     gap: 3px;
@@ -1030,6 +1034,7 @@ body {
   .board-cell {
     border-radius: 4px;
     padding: 1px;
+    min-width: 0; /* 내부 flex 아이템 찌그러짐 허용 */
   }
 
   /* 보드 셀 라벨 숨김 (세로 공간 추가로 확보) */
@@ -1054,6 +1059,7 @@ body {
     gap: 3px;
     padding: 1px 2px;
     justify-content: flex-start;
+    min-width: 0; /* 가로 스크롤 시 부모 셀을 무단으로 늘리지 않도록 함 */
   }
 
   .card {
