@@ -51,12 +51,15 @@
   touch-action: manipulation;
 }
 
+html, body {
+  overflow: auto;
+  min-height: 100vh;
+  height: auto;
+}
 body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   font-family: var(--font-main);
-  overflow: hidden;
-  height: 100vh;
   position: relative;
 }
 
@@ -86,11 +89,12 @@ body {
 .game-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
+  height: auto;
   padding: 15px 25px;
   max-width: 1600px;
   margin: 0 auto;
-  overflow: hidden; /* 절대 화면 외부 스크롤바 허용 안 함 */
+  overflow: auto; /* 내용이 넘칠 경우 세로/가로 스크롤 허용 */
 }
 
 /* 3. 헤더 영역 */
@@ -190,8 +194,9 @@ body {
   flex: 1;
   gap: 20px;
   padding: 15px 0;
-  height: calc(100vh - 90px);
-  overflow: hidden;
+  min-height: calc(100vh - 90px);
+  height: auto;
+  overflow: visible;
 }
 
 /* 5. 사이드 패널 (HP 및 로그) */
@@ -911,7 +916,7 @@ body {
 /* ==========================================
    18. 모바일 전용 반응형 스타일 (Max-width: 480px - 극단적 공간 절약)
    ========================================== */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   /* 모바일 스크롤바 스타일 최적화 */
   ::-webkit-scrollbar {
     width: 4px;
