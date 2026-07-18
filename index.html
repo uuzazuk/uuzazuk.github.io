@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>포트리스 탱크 게임</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <div id="tank-select-screen" class="screen active">
+            <h1>탱크를 선택하세요</h1>
+            <div id="tank-list" class="selection-list"></div>
+            <button id="next-btn" class="btn" disabled>다음</button>
+        </div>
+        
+        <div id="map-select-screen" class="screen">
+            <h1>맵을 선택하세요</h1>
+            <div id="map-list" class="selection-list"></div>
+            <button id="start-btn" class="btn" disabled>게임 시작</button>
+        </div>
+        
+        <div id="game-screen" class="screen">
+            <div id="hud">
+                <div class="team-score">
+                    <span class="team team-red">레드팀: <span id="red-score">0</span></span>
+                    <span class="team team-blue">블루팀: <span id="blue-score">0</span></span>
+                </div>
+                <div id="player-health">
+                    <div class="health-bar">
+                        <div id="health-fill" class="health-fill"></div>
+                    </div>
+                </div>
+            </div>
+            <canvas id="game-canvas"></canvas>
+            <div id="game-over" class="overlay hidden">
+                <h2 id="game-result"></h2>
+                <button id="restart-btn" class="btn">다시 시작</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="tanks.js"></script>
+    <script src="maps.js"></script>
+    <script src="physics.js"></script>
+    <script src="ai.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
