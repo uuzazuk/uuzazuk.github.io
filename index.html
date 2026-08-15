@@ -433,6 +433,40 @@
         opacity: 0;
       }
     }
+
+    /* 반응형 스타일링 (모바일 지원) */
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+      .container {
+        padding: 24px 16px;
+        border-radius: 16px;
+      }
+      h1 {
+        font-size: 1.8rem;
+      }
+      .stopwatch-display {
+        font-size: 3rem;
+        margin: 30px 0;
+      }
+      .btn {
+        padding: 12px 24px;
+        font-size: 1rem;
+      }
+      .leaderboard-table th, 
+      .leaderboard-table td {
+        font-size: 0.75rem;
+        padding: 10px 4px;
+      }
+      /* 모바일 가독성을 위해 메시지 생략/스크롤 또는 비율 재조정 */
+      .col-message {
+        max-width: 70px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
   </style>
 </head>
 
@@ -447,8 +481,8 @@
     <div class="gold-shower" id="goldShower"></div>
 
     <h1>5초를 잡아라!</h1>
-    <p class="subtitle">11정확히 5초를 맞추면 최강 랭킹 등극!</p>
-    <p class="subtitle" style="font-size: 10px; color: rgb(176, 176, 176);">Developed & © 2026 DDoDDo</p>
+    <p class="subtitle" style="margin-bottom: 4px;">정확히 5초를 맞추면 최강 랭킹 등극!</p>
+    <p class="subtitle" style="font-size: 10px; color: rgb(176, 176, 176); margin-bottom: 30px;">Developed & © 2026 DDoDDo</p>
 
     <!-- Stopwatch display -->
     <div class="stopwatch-display" id="display">00:00.000</div>

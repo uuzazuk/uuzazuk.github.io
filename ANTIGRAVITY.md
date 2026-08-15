@@ -7,10 +7,12 @@
 - AI 크레딧을 최소화 할 것.
 - 테스트는 내가 할 것이므로 테스트에 크레딧 소모하지 말 것.
 - 한글로 소통할 것.
+- 반응형으로 구현할 것.
 
 ## 개발환경
 - 서버 실행
-    - npx http-server .
+    - npx browser-sync start --server --files "*.html, *.js, *.css" --port 8080
+
 
 ## 환경
 Firebase에 frontend와 firestone을 이용하여 배포할 거야
