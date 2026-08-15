@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>5초를 잡아라! - 5초 스톱워치 게임</title>
+  <meta name="description" content="정확히 5초를 맞추는 스톱워치 랭킹 게임! 미려한 다크 모드 디자인과 실시간 리더보드에서 전세계의 플레이어들과 경쟁해보세요.">
+
+  <!-- Google Fonts (Outfit & Noto Sans KR) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@300;400;600;800;900&display=swap"
+    rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-gradient: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0f0f1b 100%);
+      --glass-bg: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --primary-color: #00f2fe;
+      --secondary-color: #4facfe;
+      --accent-color: #ff3366;
+      --gold-color: #ffd700;
+      --text-main: #f8f9fa;
+      --text-muted: #a0aec0;
+      --glow-shadow: 0 0 30px rgba(0, 242, 254, 0.35);
+      --gold-glow: 0 0 30px rgba(255, 215, 0, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Outfit', 'Noto Sans KR', sans-serif;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    /* Background Animation */
+    .bg-animation {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .circle {
+      position: absolute;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      filter: blur(100px);
+      opacity: 0.15;
+      animation: float 20s infinite alternate ease-in-out;
+    }
+
+    .circle-1 {
+      width: 400px;
+      height: 400px;
+      top: -100px;
+      right: -100px;
+    }
+
+    .circle-2 {
+      width: 300px;
+      height: 300px;
+      bottom: -50px;
+      left: -50px;
+      animation-delay: -5s;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      100% {
+        transform: translate(50px, 50px) scale(1.2);
+      }
+    }
+
+    .container {
+      width: 100%;
+      max-width: 600px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 40px 30px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      position: relative;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 900;
+      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 30px;
+    }
+
+    /* Stopwatch Display */
+    .stopwatch-display {
+      font-size: 4rem;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      margin: 40px 0;
+      letter-spacing: 2px;
+      color: var(--text-main);
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .stopwatch-display.running {
+      color: var(--primary-color);
+      text-shadow: var(--glow-shadow);
+    }
+
+    .stopwatch-display.stopped {
+      animation: pulse 0.5s ease-in-out;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.05);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    /* Buttons */
+    .btn-container {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .btn {
+      padding: 16px 36px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      outline: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-action {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: #0c0f1d;
+      box-shadow: 0 4px 15px rgba(0, 242, 254, 0.2);
+    }
+
+    .btn-action:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--glow-shadow);
+    }
+
+    .btn-action:active {
+      transform: translateY(1px);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+    }
+
+    /* Score section */
+    .result-section {
+      margin-bottom: 30px;
+      padding: 20px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      display: none;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    .score-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #00f2fe;
+      margin-bottom: 6px;
+    }
+
+    .score-detail {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* Form (New Ranking) */
+    .ranking-input-form {
+      margin-top: 20px;
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+      animation: slideUp 0.4s ease-out;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .input-group label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 12px 18px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      color: white;
+      font-size: 0.95rem;
+      transition: border-color 0.3s;
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+
+    /* Leaderboard */
+    .leaderboard-section {
+      margin-top: 40px;
+      text-align: left;
+    }
+
+    .leaderboard-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-main);
+    }
+
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .leaderboard-table th {
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      padding: 10px 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .leaderboard-table td {
+      padding: 14px 8px;
+      font-size: 0.9rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .rank-row {
+      transition: background 0.3s;
+    }
+
+    .rank-row:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* 1st Place Highlight */
+    .rank-row.first-place {
+      background: rgba(255, 215, 0, 0.06);
+      border-left: 3px solid var(--gold-color);
+      box-shadow: inset 0 0 15px rgba(255, 215, 0, 0.05);
+    }
+
+    .rank-row.first-place td {
+      color: #fff9e6;
+    }
+
+    .rank-row.first-place .rank-badge {
+      background: var(--gold-color);
+      color: #000;
+      font-weight: 900;
+      box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+    }
+
+    .rank-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .col-rank {
+      width: 10%;
+      text-align: center;
+    }
+
+    .col-date {
+      width: 18%;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+
+    .col-name {
+      width: 22%;
+      font-weight: 600;
+    }
+
+    .col-time {
+      width: 18%;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .col-score {
+      width: 12%;
+      text-align: right;
+      color: var(--primary-color);
+      font-weight: bold;
+    }
+
+    .col-message {
+      width: 20%;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Congratulations animation container */
+    .gold-shower {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 10;
+      border-radius: 24px;
+    }
+
+    .gold-particle {
+      position: absolute;
+      background: var(--gold-color);
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      opacity: 0;
+      animation: drop 2.5s infinite linear;
+    }
+
+    @keyframes drop {
+      0% {
+        transform: translateY(-10px) rotate(0deg);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(500px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="bg-animation">
+    <div class="circle circle-1"></div>
+    <div class="circle circle-2"></div>
+  </div>
+
+  <div class="container" id="gameContainer">
+    <div class="gold-shower" id="goldShower"></div>
+
+    <h1>5초를 잡아라!</h1>
+    <p class="subtitle">11정확히 5초를 맞추면 최강 랭킹 등극!</p>
+    <p class="subtitle" style="font-size: 10px; color: rgb(176, 176, 176);">Developed & © 2026 DDoDDo</p>
+
+    <!-- Stopwatch display -->
+    <div class="stopwatch-display" id="display">00:00.000</div>
+
+    <!-- Controls -->
+    <div class="btn-container">
+      <button class="btn btn-action" id="controlBtn">시작</button>
+      <button class="btn btn-secondary" id="restartBtn" style="display: none;">다시 하기</button>
+    </div>
+
+    <!-- Result / Status Section -->
+    <div class="result-section" id="resultBox">
+      <div class="score-value" id="scoreDisplay">0점</div>
+      <div class="score-detail" id="detailDisplay">오차: 0ms</div>
+
+      <!-- New Ranking Form -->
+      <form class="ranking-input-form" id="rankingForm">
+        <h3 style="margin-top: 10px; font-size: 1rem; color: var(--primary-color);">축하합니다! 랭킹 Top 10에 진입했습니다!</h3>
+        <div class="input-group">
+          <label for="nickname">닉네임</label>
+          <input type="text" id="nickname" class="input-field" maxlength="10" placeholder="10자 이내 입력" required>
+        </div>
+        <div class="input-group">
+          <label for="message">한줄 응원 메시지</label>
+          <input type="text" id="message" class="input-field" maxlength="30" placeholder="30자 이내 입력" required>
+        </div>
+        <button type="submit" class="btn btn-action"
+          style="padding: 10px 24px; font-size: 0.95rem; width: 100%; justify-content: center; margin-top: 10px;">랭킹
+          등록하기</button>
+      </form>
+    </div>
+
+    <!-- Leaderboard -->
+    <div class="leaderboard-section">
+      <div class="leaderboard-title">
+        <span>🏆</span> 실시간 랭킹 Top 10
+      </div>
+      <table class="leaderboard-table">
+        <thead>
+          <tr>
+            <th class="col-rank">순위</th>
+            <th class="col-date">날짜</th>
+            <th class="col-name">닉네임</th>
+            <th class="col-time">시간 기록</th>
+            <th class="col-score">점수</th>
+            <th class="col-message">메시지</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboardBody">
+          <!-- JS에서 동적 로드 -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Firebase Integration Scripts -->
+  <script type="module" src="game.js"></script>
+</body>
+
+</html>
