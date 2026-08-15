@@ -79,7 +79,7 @@ async function loadRankings() {
         <td class="col-name">${escapeHTML(nameVal || '')}</td>
         <td class="col-time">${timeText}</td>
         <td class="col-score">${data.score}점</td>
-        <td class="col-message">${escapeHTML(data.message || '')}</td>
+        <td class="col-message"><span>${escapeHTML(data.message || '')}</span></td>
       `;
       leaderboardBody.appendChild(row);
       index++;
